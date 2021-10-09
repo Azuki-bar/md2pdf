@@ -33,13 +33,17 @@ def get_dst(md_file_name: str) -> str:
 # absolute path
 def get_opt(md_file_name: str, option):
     date = datetime.date.today()
-    date_args = ['-M', f"date={get_date_str(date)}"]
+    option_args = [
+            '-M', f"date={get_date_str(date)}",
+            "-N"
+
+            ]
 
     cmd_arr = [
         PANDOC_PATH, md_file_name, '-o',
         get_dst(md_file_name), '--pdf-engine=lualatex'
     ]
-    cmd_arr.extend(date_args)
+    cmd_arr.extend(option_args)
 
     for o in option:
         cmd_arr.append('-V')
