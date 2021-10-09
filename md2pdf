@@ -1,0 +1,63 @@
+#!/usr/bin/env python3
+
+import re
+import os
+import sys
+import subprocess
+import datetime
+
+option = [
+    'documentclass=ltjsarticle', 
+    'luatexjapresetoptions=ipaex',
+    'indent=true',
+    'fontsize=11pt'
+]
+
+PANDOC_PATH = '/usr/bin/pandoc'
+
+
+def get_date_str(date: datetime.date) -> str:
+    date_fmt = "%Y年%-m月%-d日"
+    return date.strftime(date_fmt)
+
+
+def validate_name(file_name: str) -> bool:
+    return re.match(r'^.*\.md$', file_name) != None
+
+
+# absolute path
+def get_dst(md_file_name: str) -> str:
+    return f'{md_file_name.removesuffix(".md")}.pdf'
+
+
+# absolute path
+def get_opt(md_file_name: str, option):
+    date = datetime.date.today()
+    date_args = ['-M', f"date={get_date_str(date)}"]
+
+    cmd_arr = [
+        PANDOC_PATH, md_file_name, '-o',
+        get_dst(md_file_name), '--pdf-engine=lualatex'
+    ]
+    cmd_arr.extend(date_args)
+
+    for o in option:
+        cmd_arr.append('-V')
+        cmd_arr.append(o)
+    return cmd_arr
+
+
+def main():
+    relpath = sys.argv[1]
+    if validate_name(relpath) == False:
+        exit(1)
+    md_full_path = os.path.abspath(relpath)
+    cmd = get_opt(md_full_path, option)
+    print(cmd)
+    subprocess.run(cmd)
+
+    exit(0)
+
+
+if __name__ == '__main__':
+    main()
