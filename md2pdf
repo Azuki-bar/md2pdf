@@ -6,10 +6,8 @@ import sys
 import subprocess
 import datetime
 
-option = [
-    'documentclass=ltjsarticle', 
-    'luatexjapresetoptions=ipaex',
-    'indent=true',
+options = [
+    'documentclass=ltjsarticle', 'luatexjapresetoptions=ipaex', 'indent=true',
     'fontsize=11pt'
 ]
 
@@ -31,13 +29,9 @@ def get_dst(md_file_name: str) -> str:
 
 
 # absolute path
-def get_opt(md_file_name: str, option):
+def get_opt(md_file_name: str, options: list):
     date = datetime.date.today()
-    option_args = [
-            '-M', f"date={get_date_str(date)}",
-            "-N"
-
-            ]
+    option_args = ['-M', f"date={get_date_str(date)}", "-N"]
 
     cmd_arr = [
         PANDOC_PATH, md_file_name, '-o',
@@ -45,9 +39,9 @@ def get_opt(md_file_name: str, option):
     ]
     cmd_arr.extend(option_args)
 
-    for o in option:
+    for option in options:
         cmd_arr.append('-V')
-        cmd_arr.append(o)
+        cmd_arr.append(option)
     return cmd_arr
 
 
@@ -56,10 +50,8 @@ def main():
     if validate_name(relpath) == False:
         exit(1)
     md_full_path = os.path.abspath(relpath)
-    cmd = get_opt(md_full_path, option)
-    print(cmd)
+    cmd = get_opt(md_full_path, options)
     subprocess.run(cmd)
-
     exit(0)
 
 
