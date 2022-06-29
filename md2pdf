@@ -57,7 +57,7 @@ def main():
         exit(1)
     md_full_path = os.path.abspath(relpath)
     cmd = get_opt(md_full_path, option)
-    print(cmd)
+    # print(cmd)
     subprocess.run(cmd)
 
     exit(0)
